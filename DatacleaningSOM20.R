@@ -13,7 +13,7 @@ library(reshape2)
 
 #################IMPORT DATA SET################################################################################################################
 #Import data set as csv-file, exported from the Excel file 
-som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-23_clean-data.csv", head=T, dec=".", sep=",")
+som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-27_clean-data.csv", head=T, dec=".", sep=",")
 
 #convert dates
 #som$start<-as.Date(som$start-1, origin = '1900-01-01')
@@ -25,7 +25,7 @@ som$arrived_current<-as.Date(som$arrived_current-1, origin = '1900-01-01')
 
 #add date for export later
 today <- Sys.Date()
-today<-format(today, format="%y_%b_%d")
+today<-format(today, format="_%Y_%b_%d")
 
 ##################OUTLIERS ETC#################################################################################################################
 #data frame inspect shows possible mistakes
@@ -641,6 +641,15 @@ uuid<-c(uuid,u31)
 index<-c(index,i31)
 variables<-c(variables,v31)
 
+
+#incon32<-som$water_barrier.waterpoints_far==1 & (som$water_source_time== "water_premises" | som$water_source_time=="less_5_min" | som$water_source_time=="between_and_15_min") & som$of_water.doesn_t_have_issue==1
+#i32<-which(incon32)
+#u32<-som$X_uuid[which(incon32)]
+#v32<-rep("water_barrier.waterpoints_far=1, but water_source_time under 15min", length(i32))
+#uuid<-c(uuid,u32)
+#index<-c(index,i32)
+#variables<-c(variables,v32)
+
 incon32<-som$water_barrier.waterpoints_far==1 & (som$water_source_time== "water_premises" | som$water_source_time=="less_5_min" | som$water_source_time=="between_and_15_min")
 i32<-which(incon32)
 u32<-som$X_uuid[which(incon32)]
@@ -775,7 +784,7 @@ variables<-c(variables,v46)
 incon47<-som$factors_aid.Disability._Person_living_with_a_disability==1 & (som$dis_seeing=="no"&som$dis_communi=="no"&som$dis_hearing=="no"&som$dis_walk=="no"&som$dis_concentr=="no"&som$dis_selfcare=="no")
 i47<-which(incon47)
 u47<-som$X_uuid[which(incon47)]
-v47<-rep("factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc)", length(i47))
+v47<-rep("factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc", length(i47))
 uuid<-c(uuid,u47)
 index<-c(index,i47)
 variables<-c(variables,v47)
@@ -783,7 +792,7 @@ variables<-c(variables,v47)
 incon48<-som$enough_food=="yes"&(((som$avg_income-som$on_water-som$note_acccomodation)>=som$food_expenditure*1.25)&((som$avg_income-som$on_water-som$note_acccomodation)>=600))
 i48<-which(incon48)
 u48<-som$X_uuid[which(incon48)]
-v48<-rep("enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough)", length(i48))
+v48<-rep("enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough", length(i48))
 uuid<-c(uuid,u48)
 index<-c(index,i48)
 variables<-c(variables,v48)
@@ -792,7 +801,7 @@ variables<-c(variables,v48)
 incon49<-(hhChildren+som$females_18_40+som$males_18_40)==0 & som$factors_aid.30.==1
 i49<-which(incon49)
 u49<-som$X_uuid[which(incon49)]
-v49<-rep("factors_aid.30.=1, but no hh memeber under 40 listed)", length(i49))
+v49<-rep("factors_aid.30.=1, but no hh memeber under 40 listed", length(i49))
 uuid<-c(uuid,u49)
 index<-c(index,i49)
 variables<-c(variables,v49)
@@ -801,10 +810,27 @@ variables<-c(variables,v49)
 incon50<-(som$females_60_over+som$males_60_over)==0 & som$factors_aid.60.==1
 i50<-which(incon50)
 u50<-som$X_uuid[which(incon50)]
-v50<-rep("factors_aid.60.=1, but no hh memeber over 60 listed)", length(i50))
+v50<-rep("factors_aid.60.=1, but no hh memeber over 60 listed", length(i50))
 uuid<-c(uuid,u50)
 index<-c(index,i50)
 variables<-c(variables,v50)
+
+incon51<-(som$females_60_over+som$males_60_over)==0 & som$less_food>0
+i51<-which(incon51)
+u51<-som$X_uuid[which(incon51)]
+v51<-rep("less_food to elderly, but no elderly in hh", length(i51))
+uuid<-c(uuid,u51)
+index<-c(index,i51)
+variables<-c(variables,v51)
+
+incon52<-(som$females_18_40+som$females_41_59+som$males_18_40+som$males_41_59)==0 & som$less_food_adult>0
+i52<-which(incon52)
+u52<-som$X_uuid[which(incon52)]
+v52<-rep("less_food_adult to adults, but no adults in hh", length(i52))
+uuid<-c(uuid,u52)
+index<-c(index,i52)
+variables<-c(variables,v52)
+
 
 ########EXPORTING###################################################################################################
 #remove na's which happened through loop without cases (solved)
@@ -826,7 +852,7 @@ length(unique(uuid))
 inconsis=dcast(data = inconsis, formula = uuid ~ variables, fun.aggregate = mean, value.var = "ones")
 
 #add total column (put right column number in length(inconsis))
-for (i in 1:length(inconsis))
+for (i in 1:nrow(inconsis))
 {
   inconsis$total[i]<-sum(inconsis[i,2:51], na.rm = T)
 }
@@ -847,9 +873,11 @@ mergedOutInc$ones<-as.integer(rep(1, nrow(mergedOutInc)))
 Out_Inc<-dcast(data = mergedOutInc, formula = uuid ~ variables, fun.aggregate = mean, value.var = "ones")
 
 #add total column (put right column number in, length(Out_Inc))
-for (i in 1:length(Out_Inc))
+for (i in 1:nrow(Out_Inc))
 {
-  Out_Inc$total[i]<-sum(Out_Inc[i,2:108], na.rm = T)
+  Out_Inc$total[i]<-sum(Out_Inc[i,2:98], na.rm = T)
 }
 
 write_xlsx(Out_Inc, paste0("~/Desktop/REACH/Data/Out_Inc",today,".xlsx"))
+
+
