@@ -851,10 +851,11 @@ length(unique(uuid))
 #####Export inconsistencies
 inconsis=dcast(data = inconsis, formula = uuid ~ variables, fun.aggregate = mean, value.var = "ones")
 
-#add total column (put right column number in length(inconsis))
+#add total column
+l=length(inconsis)
 for (i in 1:nrow(inconsis))
 {
-  inconsis$total[i]<-sum(inconsis[i,2:51], na.rm = T)
+  inconsis$total[i]<-sum(inconsis[i,2:l], na.rm = T)
 }
 
 write_xlsx(inconsis, paste0("~/Desktop/REACH/Data/inconsistencies",today,".xlsx"))
@@ -867,17 +868,34 @@ write_xlsx(colSum, paste0("~/Desktop/REACH/Data/inconCount",today,".xlsx"))
 
 ###Export Inspect and Inconsistencies combined
 
-#merge outliers and inconsistencies, make a wide table and export
+#merge outliers and inconsistencies, make a wide table, add total and totalInd and export
 mergedOutInc<-Reduce(function(x, y) merge(x, y, all=TRUE), list(inconsistencies, inspect2))
 mergedOutInc$ones<-as.integer(rep(1, nrow(mergedOutInc)))
 Out_Inc<-dcast(data = mergedOutInc, formula = uuid ~ variables, fun.aggregate = mean, value.var = "ones")
 
-#add total column (put right column number in, length(Out_Inc))
+#add total column 
+l_2=length(Out_Inc)
 for (i in 1:nrow(Out_Inc))
 {
-  Out_Inc$total[i]<-sum(Out_Inc[i,2:98], na.rm = T)
+  Out_Inc$total[i]<-sum(Out_Inc[i,2:l_2], na.rm = T)
+}
+
+#sum all inconsistencies including questions for the indicators for each survey
+
+for (i in 1:nrow(Out_Inc))
+{
+  Out_Inc$total_Ind[i]<-sum(Out_Inc[i,c("less_food to elderly, but no elderly in hh","sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
+                                       "medical_services=no and barriers_health.no_issues=1","latrine_features.door=1, but latrine_features.walls_=0",
+                                       "latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
+                                       "water_barrier.waterpoints_far=1, but water_source_time under 15min", "factors_aid.60.=1, but no hh memeber over 60 listed",
+                                       "latrine_features.lock=1, but stated no privacy: sanitation_barriers.sanitation_etc=1", "factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc",
+                                       "read_write=no, doesn't fit to remote_edu_via answer", "enrollement_note is bigger than som$enrolled_total",
+                                       "health_access=no, but barriers_health.no_issues=1", "sum of covid enrolled children is not equal to sum of enrolled children",
+                                       "less_food_adult to adults, but no adults in hh", "child_labor_notes does not equal boys_labor+girls_labor",
+                                       "enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough",
+                                       "sum of males and females under 18 does not match hh_children", "all girls in hh are less than girls_labor",
+                                       "information_channel=no_need & aid_barriers.lack_information=1", "more hh_members_new_unemployed than adult hh members",
+                                       "more chronic ill children than hh children")], na.rm = T)
 }
 
 write_xlsx(Out_Inc, paste0("~/Desktop/REACH/Data/Out_Inc",today,".xlsx"))
-
-
