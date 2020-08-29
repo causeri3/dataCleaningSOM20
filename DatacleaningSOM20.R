@@ -168,22 +168,24 @@ uuid<-u0_1
 index<-i0_1
 variables<-v0_1
 
-incon1<-som$hh_size == som$total_hh
-i1<-which(!incon1)
-u1<-som$X_uuid[which(!incon1)]
-v1<-rep("hh_size doesn't equal total_hh", length(i1))
-uuid<-u1
-index<-i1
-variables<-v1
+###DROPPED
+#incon1<-som$hh_size == som$total_hh
+#i1<-which(!incon1)
+#u1<-som$X_uuid[which(!incon1)]
+#v1<-rep("hh_size doesn't equal total_hh", length(i1))
+#uuid<-u1
+#index<-i1
+#variables<-v1
 
-hh<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$males_18_40+som$males_41_59+som$males_60_over+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
-incon2<-hh==som$hh_size
-i2<-which(!incon2)
-u2<-som$X_uuid[which(!incon2)]
-v2<-rep("sum of males and females does not match total_hh", length(i2))
-uuid<-c(uuid,u2)
-index<-c(index,i2)
-variables<-c(variables,v2)
+###DROPPED
+#hh<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$males_18_40+som$males_41_59+som$males_60_over+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
+#incon2<-hh==som$hh_size
+#i2<-which(!incon2)
+#u2<-som$X_uuid[which(!incon2)]
+#v2<-rep("sum of males and females does not match total_hh", length(i2))
+#uuid<-c(uuid,u2)
+#index<-c(index,i2)
+#variables<-c(variables,v2)
 
 hhChildren<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17)
 incon3<-hhChildren==som$hh_children
@@ -303,13 +305,14 @@ for (i in 1:length(hhCheck2))
 #only two of the  hhh_count_check entries have "no" as answer for (145,169 in hhCheck2) 5007, 7002 in data set, uuid: 69c54c62-3367-47b8-b08c-8cbc16a85658, acaa7e57-1300-419b-bca6-bc336c6043f2
 
 #########CONTINUE INCONSISTENCIES#####################################################################################################
-incon16<-(som$avg_income+som$avg_debt)>=som$food_expenditure
-i16<-which(!incon16)
-u16<-som$X_uuid[which(!incon16)]
-v16<-rep("avg_income + avg_dept is smaller than food_expenditures", length(i16))
-uuid<-c(uuid,u16)
-index<-c(index,i16)
-variables<-c(variables,v16)
+###DROPPED
+#incon16<-(som$avg_income+som$avg_debt)>=som$food_expenditure
+#i16<-which(!incon16)
+#u16<-som$X_uuid[which(!incon16)]
+#v16<-rep("avg_income + avg_dept is smaller than food_expenditures", length(i16))
+#uuid<-c(uuid,u16)
+#index<-c(index,i16)
+#variables<-c(variables,v16)
 
 incon16_1<-som$income_src.none==1 & som$income_src.cash_crop_farming==1
 i16_1<-which(incon16_1)
@@ -410,16 +413,8 @@ index<-c(index,i16_11)
 variables<-c(variables,v16_11)
 #has no case
 
-incon16_12<-som$income_src.none==1 & som$avg_income>0
-i16_12<-which(incon16_12)
-u16_12<-som$X_uuid[which(incon16_12)]
-v16_12<-rep("income_src.none = 1, avg_income bigger than 0", length(i16_12))
-uuid<-c(uuid,u16_12)
-index<-c(index,i16_12)
-variables<-c(variables,v16_12)
-
-#people might see debts as income, a friend lending money could be income
-#incon16_12<-som$income_src.none==1 & som$avg_debt-som$avg_income<0
+###UPDATED, see below
+#incon16_12<-som$income_src.none==1 & som$avg_income>0
 #i16_12<-which(incon16_12)
 #u16_12<-som$X_uuid[which(incon16_12)]
 #v16_12<-rep("income_src.none = 1, avg_income bigger than 0", length(i16_12))
@@ -427,13 +422,24 @@ variables<-c(variables,v16_12)
 #index<-c(index,i16_12)
 #variables<-c(variables,v16_12)
 
-incon16_13<-(som$hh_members_income>0 & som$income_src.none==1)
-i16_13<-which(incon16_13)
-u16_13<-som$X_uuid[which(incon16_13)]
-v16_13<-rep("income_src.none=1, but hh_members_income more than 0", length(i16_13))
-uuid<-c(uuid,u16_13)
-index<-c(index,i16_13)
-variables<-c(variables,v16_13)
+###UPDATED
+#people might see debts as income, a friend lending money could be income
+incon16_12<-som$income_src.none==1 & som$avg_debt-som$avg_income<0
+i16_12<-which(incon16_12)
+u16_12<-som$X_uuid[which(incon16_12)]
+v16_12<-rep("income_src.none = 1, avg_debt minus avg_income smaller than 0", length(i16_12))
+uuid<-c(uuid,u16_12)
+index<-c(index,i16_12)
+variables<-c(variables,v16_12)
+
+###DROPPED
+#incon16_13<-(som$hh_members_income>0 & som$income_src.none==1)
+#i16_13<-which(incon16_13)
+#u16_13<-som$X_uuid[which(incon16_13)]
+#v16_13<-rep("income_src.none=1, but hh_members_income more than 0", length(i16_13))
+#uuid<-c(uuid,u16_13)
+#index<-c(index,i16_13)
+#variables<-c(variables,v16_13)
 
 #maybe debt is counted as income
 #incon16_13<-((som$avg_debt-som$hh_members_income<0) & som$income_src.none==1)
@@ -499,21 +505,23 @@ index<-c(index,i18)
 variables<-c(variables,v18)
 #no case
 
-incon19<-(som$covid_boys_6_12+som$covid_girls_6_12+som$covid_boys_13_17+som$covid_girls_13_17)==(som$enrolled_boys_6_12+som$enrolled_girls_6_12+som$enrolled_boys_13_17+som$enrolled_girls_13_17+som$enrolled_boys_6_12e+som$enrolled_girls_6_12e+som$enrolled_boys_13_17e+som$enrolled_girls_13_17e)
-i19<-which(!incon19)
-u19<-som$X_uuid[which(!incon19)]
-v19<-rep("sum of covid enrolled children is not equal to sum of enrolled children", length(i19))
-uuid<-c(uuid,u19)
-index<-c(index,i19)
-variables<-c(variables,v19)
+###DROPPED
+#incon19<-(som$covid_boys_6_12+som$covid_girls_6_12+som$covid_boys_13_17+som$covid_girls_13_17)==(som$enrolled_boys_6_12+som$enrolled_girls_6_12+som$enrolled_boys_13_17+som$enrolled_girls_13_17+som$enrolled_boys_6_12e+som$enrolled_girls_6_12e+som$enrolled_boys_13_17e+som$enrolled_girls_13_17e)
+#i19<-which(!incon19)
+#u19<-som$X_uuid[which(!incon19)]
+#v19<-rep("sum of covid enrolled children is not equal to sum of enrolled children", length(i19))
+#uuid<-c(uuid,u19)
+#index<-c(index,i19)
+#variables<-c(variables,v19)
 
-incon19_1<-(som$covid_boys_6_12+som$covid_girls_6_12+som$covid_boys_13_17+som$covid_girls_13_17)==som$covid_enrollement
-i19_1<-which(!incon19_1)
-u19_1<-som$X_uuid[which(!incon19_1)]
-v19_1<-rep("covid_enrollement is not equal to sum of covid children", length(i19_1))
-uuid<-c(uuid,u19_1)
-index<-c(index,i19_1)
-variables<-c(variables,v19_1)
+###DROPPED
+#incon19_1<-(som$covid_boys_6_12+som$covid_girls_6_12+som$covid_boys_13_17+som$covid_girls_13_17)==som$covid_enrollement
+#i19_1<-which(!incon19_1)
+#u19_1<-som$X_uuid[which(!incon19_1)]
+#v19_1<-rep("covid_enrollement is not equal to sum of covid children", length(i19_1))
+#uuid<-c(uuid,u19_1)
+#index<-c(index,i19_1)
+#variables<-c(variables,v19_1)
 
 incon20<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17)>=(som$enrolled_boys_6_12+som$enrolled_girls_6_12+som$enrolled_boys_13_17+som$enrolled_girls_13_17+som$enrolled_boys_6_12e+som$enrolled_girls_6_12e+som$enrolled_boys_13_17e+som$enrolled_girls_13_17e)
 i20<-which(!incon20)
@@ -526,7 +534,7 @@ variables<-c(variables,v20)
 incon21<-som$enrollement_note<=som$enrolled_total
 i21<-which(!incon21)
 u21<-som$X_uuid[which(!incon21)]
-v21<-rep("enrollement_note is bigger than som$enrolled_total", length(i21))
+v21<-rep("enrollement_note is bigger than enrolled_total", length(i21))
 uuid<-c(uuid,u21)
 index<-c(index,i21)
 variables<-c(variables,v21)
@@ -564,13 +572,14 @@ uuid<-c(uuid,u25)
 index<-c(index,i25)
 variables<-c(variables,v25)
 
-incon26<-som$child_labor_notes == (som$boys_labor+som$girls_labor)
-i26<-which(!incon26)
-u26<-som$X_uuid[which(!incon26)]
-v26<-rep("child_labor_notes does not equal boys_labor+girls_labor", length(i26))
-uuid<-c(uuid,u26)
-index<-c(index,i26)
-variables<-c(variables,v26)
+###DROPPED
+#incon26<-som$child_labor_notes == (som$boys_labor+som$girls_labor)
+#i26<-which(!incon26)
+#u26<-som$X_uuid[which(!incon26)]
+#v26<-rep("child_labor_notes does not equal boys_labor+girls_labor", length(i26))
+#uuid<-c(uuid,u26)
+#index<-c(index,i26)
+#variables<-c(variables,v26)
 
 incon26_1<-(som$males_0m_5y+som$fmales_6_12 +som$males_13_15+ som$males_16_17) >= som$boys_labor
 i26_1<-which(!incon26_1)
@@ -616,13 +625,14 @@ uuid<-c(uuid,u29)
 index<-c(index,i29)
 variables<-c(variables,v29)
 
-incon30<-(som$pregnancy=="yes" & (som$females_16_17+som$females_13_15+som$females_18_40+som$females_41_59)==0)
-i30<-which(incon30)
-u30<-som$X_uuid[which(incon30)]
-v30<-rep("pregnancy=yes, but no females between 13&59 years in hh", length(i30))
-uuid<-c(uuid,u30)
-index<-c(index,i30)
-variables<-c(variables,v30)
+###DROPPED
+#incon30<-(som$pregnancy=="yes" & (som$females_16_17+som$females_13_15+som$females_18_40+som$females_41_59)==0)
+#i30<-which(incon30)
+#u30<-som$X_uuid[which(incon30)]
+#v30<-rep("pregnancy=yes, but no females between 13&59 years in hh", length(i30))
+#uuid<-c(uuid,u30)
+#index<-c(index,i30)
+#variables<-c(variables,v30)
 
 #counting girls from 6-12 as well
 #incon30<-(som$pregnancy=="yes" & (som$females_6_12+som$females_16_17+som$females_13_15+som$females_18_40+som$females_41_59)==0)
@@ -633,13 +643,14 @@ variables<-c(variables,v30)
 #index<-c(index,i30)
 #variables<-c(variables,v30)
 
-incon31<-som$read_write=="no" & (som$remote_edu_via.reading==1 | som$remote_edu_via.online_classes==1 | som$remote_edu_via.online==1 | som$remote_edu_via.school==1)
-i31<-which(incon31)
-u31<-som$X_uuid[which(incon31)]
-v31<-rep("read_write=no, doesn't fit to remote_edu_via answer", length(i31))
-uuid<-c(uuid,u31)
-index<-c(index,i31)
-variables<-c(variables,v31)
+###DROPPED
+#incon31<-som$read_write=="no" & (som$remote_edu_via.reading==1 | som$remote_edu_via.online_classes==1 | som$remote_edu_via.online==1 | som$remote_edu_via.school==1)
+#i31<-which(incon31)
+#u31<-som$X_uuid[which(incon31)]
+#v31<-rep("read_write=no, doesn't fit to remote_edu_via answer", length(i31))
+#uuid<-c(uuid,u31)
+#index<-c(index,i31)
+#variables<-c(variables,v31)
 
 
 #incon32<-som$water_barrier.waterpoints_far==1 & (som$water_source_time== "water_premises" | som$water_source_time=="less_5_min" | som$water_source_time=="between_and_15_min") & som$of_water.doesn_t_have_issue==1
@@ -650,21 +661,23 @@ variables<-c(variables,v31)
 #index<-c(index,i32)
 #variables<-c(variables,v32)
 
-incon32<-som$water_barrier.waterpoints_far==1 & (som$water_source_time== "water_premises" | som$water_source_time=="less_5_min" | som$water_source_time=="between_and_15_min")
-i32<-which(incon32)
-u32<-som$X_uuid[which(incon32)]
-v32<-rep("water_barrier.waterpoints_far=1, but water_source_time under 15min", length(i32))
-uuid<-c(uuid,u32)
-index<-c(index,i32)
-variables<-c(variables,v32)
+###DROPPED
+#incon32<-som$water_barrier.waterpoints_far==1 & (som$water_source_time== "water_premises" | som$water_source_time=="less_5_min" | som$water_source_time=="between_and_15_min")
+#i32<-which(incon32)
+#u32<-som$X_uuid[which(incon32)]
+#v32<-rep("water_barrier.waterpoints_far=1, but water_source_time under 15min", length(i32))
+#uuid<-c(uuid,u32)
+#index<-c(index,i32)
+#variables<-c(variables,v32)
 
-incon33<-som$difference_arrived_today_days>90 & som$employ_loss_why.displacement==1
-i33<-which(incon33)
-u33<-som$X_uuid[which(incon33)]
-v33<-rep("employ_loss_why.displacement=1, but difference_arrived_today_days over 90", length(i33))
-uuid<-c(uuid,u33)
-index<-c(index,i33)
-variables<-c(variables,v33)
+###DROPPED
+#incon33<-som$difference_arrived_today_days>90 & som$employ_loss_why.displacement==1
+#i33<-which(incon33)
+#u33<-som$X_uuid[which(incon33)]
+#v33<-rep("employ_loss_why.displacement=1, but difference_arrived_today_days over 90", length(i33))
+#uuid<-c(uuid,u33)
+#index<-c(index,i33)
+#variables<-c(variables,v33)
 
 incon34<-som$hosting_idp=="yes" & som$hosting_idp_number==0
 i34<-which(incon34)
@@ -715,46 +728,51 @@ uuid<-c(uuid,u39)
 index<-c(index,i39)
 variables<-c(variables,v39)
 
-incon40<- (som$latrine_features.lock==1 & som$sanitation_barriers.sanitation_etc==1)
-i40<-which(incon40)
-u40<-som$X_uuid[which(incon40)]
-v40<-rep("latrine_features.lock=1, but stated no privacy: sanitation_barriers.sanitation_etc=1", length(i40))
-uuid<-c(uuid,u40)
-index<-c(index,i40)
-variables<-c(variables,v40)
+##DROPPED
+#incon40<- (som$latrine_features.lock==1 & som$sanitation_barriers.sanitation_etc==1)
+#i40<-which(incon40)
+#u40<-som$X_uuid[which(incon40)]
+#v40<-rep("latrine_features.lock=1, but stated no privacy: sanitation_barriers.sanitation_etc=1", length(i40))
+#uuid<-c(uuid,u40)
+#index<-c(index,i40)
+#variables<-c(variables,v40)
 
-incon41<- (som$shelter_type=="buul" & som$sum_rooms>5)
-i41<-which(incon41)
-u41<-som$X_uuid[which(incon41)]
-v41<-rep("shelter_type==buul, but sum_rooms over 5", length(i41))
-uuid<-c(uuid,u41)
-index<-c(index,i41)
-variables<-c(variables,v41)
+###DROPPED
+#incon41<- (som$shelter_type=="buul" & som$sum_rooms>5)
+#i41<-which(incon41)
+#u41<-som$X_uuid[which(incon41)]
+#v41<-rep("shelter_type==buul, but sum_rooms over 5", length(i41))
+#uuid<-c(uuid,u41)
+#index<-c(index,i41)
+#variables<-c(variables,v41)
 
-incon42<-(som$written_documentation=="yes" & som$hlp_problems.lack_documents==1)
-i42<-which(incon42)
-u42<-som$X_uuid[which(incon42)]
-v42<-rep("written_documentation=yes & hlp_problems.lack_documents==1", length(i42))
-uuid<-c(uuid,u42)
-index<-c(index,i42)
-variables<-c(variables,v42)
+###DROPPED
+#incon42<-(som$written_documentation=="yes" & som$hlp_problems.lack_documents==1)
+#i42<-which(incon42)
+#u42<-som$X_uuid[which(incon42)]
+#v42<-rep("written_documentation=yes & hlp_problems.lack_documents=1", length(i42))
+#uuid<-c(uuid,u42)
+#index<-c(index,i42)
+#variables<-c(variables,v42)
 
-incon43<-(som$health_access=="no" & som$barriers_health.no_issues==1)
-i43<-which(incon43)
-u43<-som$X_uuid[which(incon43)]
-v43<-rep("health_access=no, but barriers_health.no_issues=1", length(i43))
-uuid<-c(uuid,u43)
-index<-c(index,i43)
-variables<-c(variables,v43)
+###DROPPED
+#incon43<-(som$health_access=="no" & som$barriers_health.no_issues==1)
+#i43<-which(incon43)
+#u43<-som$X_uuid[which(incon43)]
+#v43<-rep("health_access=no, but barriers_health.no_issues=1", length(i43))
+#uuid<-c(uuid,u43)
+#index<-c(index,i43)
+#variables<-c(variables,v43)
 #could happen if no money or insurance....?
 
-incon44<-(som$medical_services=="no" & som$barriers_health.no_issues==1)
-i44<-which(incon44)
-u44<-som$X_uuid[which(incon44)]
-v44<-rep("medical_services=no and barriers_health.no_issues=1", length(i44))
-uuid<-c(uuid,u44)
-index<-c(index,i44)
-variables<-c(variables,v44)
+###DROPPED
+#incon44<-(som$medical_services=="no" & som$barriers_health.no_issues==1)
+#i44<-which(incon44)
+#u44<-som$X_uuid[which(incon44)]
+#v44<-rep("medical_services=no and barriers_health.no_issues=1", length(i44))
+#uuid<-c(uuid,u44)
+#index<-c(index,i44)
+#variables<-c(variables,v44)
 
 #without the walking time and mobile health I get about 350 more
 #incon44<-(som$medical_services=="no" & (som$health_time=="less15" | som$health_time=="16_30"| som$health_time=="31_60"| som$health_mobile=="yes") & som$barriers_health.no_issues==1)
@@ -765,13 +783,14 @@ variables<-c(variables,v44)
 #index<-c(index,i44)
 #variables<-c(variables,v44)
 
-incon45<-som$information_channel=="no_need" & som$aid_barriers.lack_information==1
-i45<-which(incon45)
-u45<-som$X_uuid[which(incon45)]
-v45<-rep("information_channel=no_need & aid_barriers.lack_information=1", length(i45))
-uuid<-c(uuid,u45)
-index<-c(index,i45)
-variables<-c(variables,v45)
+###DROPPED
+#incon45<-som$information_channel=="no_need" & som$aid_barriers.lack_information==1
+#i45<-which(incon45)
+#u45<-som$X_uuid[which(incon45)]
+#v45<-rep("information_channel=no_need & aid_barriers.lack_information=1", length(i45))
+#uuid<-c(uuid,u45)
+#index<-c(index,i45)
+#variables<-c(variables,v45)
 
 incon46<- (som$un_continue!="none") &(som$un_continue==som$un_stop)
 i46<-which(incon46)
@@ -789,13 +808,14 @@ uuid<-c(uuid,u47)
 index<-c(index,i47)
 variables<-c(variables,v47)
 
-incon48<-som$enough_food=="yes"&(((som$avg_income-som$on_water-som$note_acccomodation)>=som$food_expenditure*1.25)&((som$avg_income-som$on_water-som$note_acccomodation)>=600))
-i48<-which(incon48)
-u48<-som$X_uuid[which(incon48)]
-v48<-rep("enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough", length(i48))
-uuid<-c(uuid,u48)
-index<-c(index,i48)
-variables<-c(variables,v48)
+###DROPPED
+#incon48<-som$enough_food=="yes"&(((som$avg_income-som$on_water-som$note_acccomodation)>=som$food_expenditure*1.25)&((som$avg_income-som$on_water-som$note_acccomodation)>=600))
+#i48<-which(incon48)
+#u48<-som$X_uuid[which(incon48)]
+#v48<-rep("enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough", length(i48))
+#uuid<-c(uuid,u48)
+#index<-c(index,i48)
+#variables<-c(variables,v48)
 
 
 incon49<-(hhChildren+som$females_18_40+som$males_18_40)==0 & som$factors_aid.30.==1
@@ -815,21 +835,23 @@ uuid<-c(uuid,u50)
 index<-c(index,i50)
 variables<-c(variables,v50)
 
-incon51<-(som$females_60_over+som$males_60_over)==0 & som$less_food>0
-i51<-which(incon51)
-u51<-som$X_uuid[which(incon51)]
-v51<-rep("less_food to elderly, but no elderly in hh", length(i51))
-uuid<-c(uuid,u51)
-index<-c(index,i51)
-variables<-c(variables,v51)
+###DROPPED
+#incon51<-(som$females_60_over+som$males_60_over)==0 & som$less_food>0
+#i51<-which(incon51)
+#u51<-som$X_uuid[which(incon51)]
+#v51<-rep("less_food to elderly, but no elderly in hh", length(i51))
+#uuid<-c(uuid,u51)
+#index<-c(index,i51)
+#variables<-c(variables,v51)
 
-incon52<-(som$females_18_40+som$females_41_59+som$males_18_40+som$males_41_59)==0 & som$less_food_adult>0
-i52<-which(incon52)
-u52<-som$X_uuid[which(incon52)]
-v52<-rep("less_food_adult to adults, but no adults in hh", length(i52))
-uuid<-c(uuid,u52)
-index<-c(index,i52)
-variables<-c(variables,v52)
+###DROPPED
+#incon52<-(som$females_18_40+som$females_41_59+som$males_18_40+som$males_41_59)==0 & som$less_food_adult>0
+#i52<-which(incon52)
+#u52<-som$X_uuid[which(incon52)]
+#v52<-rep("less_food_adult to adults, but no adults in hh", length(i52))
+#uuid<-c(uuid,u52)
+#index<-c(index,i52)
+#variables<-c(variables,v52)
 
 
 ########EXPORTING###################################################################################################
@@ -861,8 +883,8 @@ for (i in 1:nrow(inconsis))
 write_xlsx(inconsis, paste0("~/Desktop/REACH/Data/inconsistencies",today,".xlsx"))
 
 ######Export Count of inconsistencies
-
-colSum <- data.frame(names = names(inconsis[,2:52]), sums_inconsis=colSums(inconsis[,2:52], na.rm = TRUE, dims = 1))
+l_2<-length(inconsis)
+colSum <- data.frame(names = names(inconsis[,2:l_2]), sums_inconsis=colSums(inconsis[,2:l_2], na.rm = TRUE, dims = 1))
 
 write_xlsx(colSum, paste0("~/Desktop/REACH/Data/inconCount",today,".xlsx"))
 
@@ -874,28 +896,43 @@ mergedOutInc$ones<-as.integer(rep(1, nrow(mergedOutInc)))
 Out_Inc<-dcast(data = mergedOutInc, formula = uuid ~ variables, fun.aggregate = mean, value.var = "ones")
 
 #add total column 
-l_2=length(Out_Inc)
+l_3=length(Out_Inc)
 for (i in 1:nrow(Out_Inc))
 {
-  Out_Inc$total[i]<-sum(Out_Inc[i,2:l_2], na.rm = T)
+  Out_Inc$total[i]<-sum(Out_Inc[i,2:l_3], na.rm = T)
 }
 
 #sum all inconsistencies including questions for the indicators for each survey
 
+###UPDATED, see below
+#for (i in 1:nrow(Out_Inc))
+#{
+#  Out_Inc$total_Ind[i]<-sum(Out_Inc[i,c("less_food to elderly, but no elderly in hh","sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
+#                                       "medical_services=no and barriers_health.no_issues=1","latrine_features.door=1, but latrine_features.walls_=0",
+#                                       "latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
+#                                       "water_barrier.waterpoints_far=1, but water_source_time under 15min", "factors_aid.60.=1, but no hh memeber over 60 listed",
+#                                       "latrine_features.lock=1, but stated no privacy: sanitation_barriers.sanitation_etc=1", "factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc",
+#                                       "read_write=no, doesn't fit to remote_edu_via answer", "enrollement_note is bigger than som$enrolled_total",
+#                                       "health_access=no, but barriers_health.no_issues=1", "sum of covid enrolled children is not equal to sum of enrolled children",
+#                                       "less_food_adult to adults, but no adults in hh", "child_labor_notes does not equal boys_labor+girls_labor",
+#                                       "enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough",
+#                                       "sum of males and females under 18 does not match hh_children", "all girls in hh are less than girls_labor",
+#                                       "information_channel=no_need & aid_barriers.lack_information=1", "more hh_members_new_unemployed than adult hh members",
+#                                       "more chronic ill children than hh children")], na.rm = T)
+#}
+
+###UPDATED
 for (i in 1:nrow(Out_Inc))
 {
-  Out_Inc$total_Ind[i]<-sum(Out_Inc[i,c("less_food to elderly, but no elderly in hh","sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
-                                       "medical_services=no and barriers_health.no_issues=1","latrine_features.door=1, but latrine_features.walls_=0",
-                                       "latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
-                                       "water_barrier.waterpoints_far=1, but water_source_time under 15min", "factors_aid.60.=1, but no hh memeber over 60 listed",
-                                       "latrine_features.lock=1, but stated no privacy: sanitation_barriers.sanitation_etc=1", "factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc",
-                                       "read_write=no, doesn't fit to remote_edu_via answer", "enrollement_note is bigger than som$enrolled_total",
-                                       "health_access=no, but barriers_health.no_issues=1", "sum of covid enrolled children is not equal to sum of enrolled children",
-                                       "less_food_adult to adults, but no adults in hh", "child_labor_notes does not equal boys_labor+girls_labor",
-                                       "enough_food=yes, but income too high and on_water&note_accomodation&food_expenditure not high enough",
-                                       "sum of males and females under 18 does not match hh_children", "all girls in hh are less than girls_labor",
-                                       "information_channel=no_need & aid_barriers.lack_information=1", "more hh_members_new_unemployed than adult hh members",
-                                       "more chronic ill children than hh children")], na.rm = T)
+  Out_Inc$total_Ind[i]<-sum(Out_Inc[i,c("sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
+                                        "latrine_features.door=1, but latrine_features.walls_=0",
+                                        "latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
+                                        "factors_aid.60.=1, but no hh memeber over 60 listed",
+                                        "factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc",
+                                        "enrollement_note is bigger than som$enrolled_total",
+                                        "sum of males and females under 18 does not match hh_children", "all girls in hh are less than girls_labor", "more hh_members_new_unemployed than adult hh members",
+                                        "more chronic ill children than hh children")], na.rm = T)
 }
+
 
 write_xlsx(Out_Inc, paste0("~/Desktop/REACH/Data/Out_Inc",today,".xlsx"))
