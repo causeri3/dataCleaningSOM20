@@ -4,16 +4,29 @@ install.packages("devtools")
 #https://github.com/caldwellst/som_mcna_19
 devtools::install_github("impact-initiatives/cleaninginspectoR")
 install.packages("writexl")
+install.packages("readxl")
 install.packages("reshape2")
+install.packages("dplyr")
 
 library(devtools)
 library(cleaninginspectoR)
 library(writexl)
 library(reshape2)
+library(readxl)
+library(dplyr)
 
 #################IMPORT DATA SET################################################################################################################
 #Import data set as csv-file, exported from the Excel file 
-som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-27_clean-data.csv", head=T, dec=".", sep=",")
+som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-30_v5.csv", head=T, dec=".", sep=",")
+
+#som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5_2020_Sep_02_clean_data.csv", head=T, dec=".", sep=",")
+#som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5_2020_Sep_02_deleted_surveys.csv", head=T, dec=".", sep=",")
+#som0<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5_2020_Sep_02_clean_data.csv", head=T, dec=".", sep=",")
+#som1<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5_2020_Sep_01_clean_data.csv", head=T, dec=".", sep=",")
+#som2<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-30_v4_clean_data_incl_callbacks_2020_Sep_01.csv", head=T, dec=".", sep=",")
+#som3<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-30_v4_clean_data.csv", head=T, dec=".", sep=",")
+#som4<-read.xlsx("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5_2020_Sep_01_clean_data.xlsx", skipEmptyCols = TRUE, na.strings = "", sheet = 1)
+
 
 #convert dates
 #som$start<-as.Date(som$start-1, origin = '1900-01-01')
@@ -36,7 +49,7 @@ inspect$uuid<-som$X_uuid[inspect$index]
 
 
 #export as Excel
-write_xlsx(inspect, paste0("~/Desktop/REACH/Data/OutliersEtc",today,".xlsx"))
+write_xlsx(inspect, paste0("~/Desktop/REACH/Data/OutliersEtc",today,"final.xlsx"))
 
 #make new dataframe prep for merge later
 
@@ -45,14 +58,15 @@ inspect2<-data.frame(inspect$uuid[8:length(blubb)], blubb[8:length(blubb)])
 names(inspect2)<-c('uuid','variables')
 
 ##################SPELLING MISTAKES###########################################################################################################
-#check out header
-colnames(somChar)
 
 #search in all character columns for writing mistakes
 char <- unlist(lapply(som, is.character))  
 somChar<-som[ , char]
 #justify right
 #format(somChar, justify = "right")
+
+#check out header
+colnames(somChar)
 
 table(somChar[,3])
 #respondent_region: capita (Awdal, Bakool, Bay, Galguduud, Sanaag, Saraar, Sool, Togdheer) & small letters, 21 surveys have no region, "hiiraan" & "hiraan"?, "lower_shabelle" & "Lower Shabelle", "Toddheer" & "Togdheer" & "togdheer", "w/gabeed" &"w/galbeed" &"waqooyi galbeed" & "waqoyi_galbeed"&"woqooyi_galbeed"
@@ -142,7 +156,7 @@ table(somChar[,178])
 
 colnames(somChar[1])
 
-###########INCONSTISTENCIS###########################################################################################################
+###########INCONSISTENCIES###########################################################################################################
 
 incon0<-((som$end-som$start)*24*60)<15
 i0<-which(incon0)
@@ -152,21 +166,21 @@ uuid<-u0
 index<-i0
 variables<-v0
 
-incon0_0<-((som$end-som$start)*24*60)>45
-i0_0<-which(incon0_0)
-u0_0<-som$X_uuid[which(incon0_0)]
-v0_0<-rep("survey took over 45 min", length(i0_0))
-uuid<-u0_0
-index<-i0_0
-variables<-v0_0
+#incon0_0<-((som$end-som$start)*24*60)>45
+#i0_0<-which(incon0_0)
+#u0_0<-som$X_uuid[which(incon0_0)]
+#v0_0<-rep("survey took over 45 min", length(i0_0))
+#uuid<-c(uuid, u0_0)
+#index<-c(index, i0_0)
+#variables<-(variables, v0_0)
 
 incon0_1<-((som$end-som$start)*24*60)>90
 i0_1<-which(incon0_1)
 u0_1<-som$X_uuid[which(incon0_1)]
 v0_1<-rep("survey took over 90 min", length(i0_1))
-uuid<-u0_1
-index<-i0_1
-variables<-v0_1
+uuid<-c(uuid, u0_1)
+index<-c(index, i0_1)
+variables<-c(variables, v0_1)
 
 ###DROPPED
 #incon1<-som$hh_size == som$total_hh
@@ -178,7 +192,7 @@ variables<-v0_1
 #variables<-v1
 
 ###DROPPED
-#hh<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$males_18_40+som$males_41_59+som$males_60_over+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
+hh<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$males_18_40+som$males_41_59+som$males_60_over+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
 #incon2<-hh==som$hh_size
 #i2<-which(!incon2)
 #u2<-som$X_uuid[which(!incon2)]
@@ -303,6 +317,7 @@ for (i in 1:length(hhCheck2))
 }
 
 #only two of the  hhh_count_check entries have "no" as answer for (145,169 in hhCheck2) 5007, 7002 in data set, uuid: 69c54c62-3367-47b8-b08c-8cbc16a85658, acaa7e57-1300-419b-bca6-bc336c6043f2
+# 10 in version 30_v3
 
 #########CONTINUE INCONSISTENCIES#####################################################################################################
 ###DROPPED
@@ -321,7 +336,6 @@ v16_1<-rep("income_src.none = 1 and income_src.cash_crop_farming = 1", length(i1
 uuid<-c(uuid,u16_1)
 index<-c(index,i16_1)
 variables<-c(variables,v16_1)
-#has no case
 
 incon16_2<-som$income_src.none==1 & som$income_src.cash_fishing==1
 i16_2<-which(incon16_2)
@@ -330,7 +344,6 @@ v16_2<-rep("income_src.none = 1 and income_src.cash_fishing = 1", length(i16_2))
 uuid<-c(uuid,u16_2)
 index<-c(index,i16_2)
 variables<-c(variables,v16_2)
-#has no case
 
 incon16_3<-som$income_src.none==1 & som$income_src.daily_labour==1
 i16_3<-which(incon16_3)
@@ -339,7 +352,6 @@ v16_3<-rep("income_src.none = 1 and income_src.daily_labour = 1", length(i16_3))
 uuid<-c(uuid,u16_3)
 index<-c(index,i16_3)
 variables<-c(variables,v16_3)
-#has no case
 
 incon16_4<-som$income_src.none==1 & som$income_src.livestock_production==1
 i16_4<-which(incon16_4)
@@ -348,7 +360,6 @@ v16_4<-rep("income_src.none = 1 and income_src.livestock_production = 1", length
 uuid<-c(uuid,u16_4)
 index<-c(index,i16_4)
 variables<-c(variables,v16_4)
-#has no case
 
 incon16_5<-som$income_src.none==1 & som$income_src.subsistence_farming_or_fishing==1
 i16_5<-which(incon16_5)
@@ -357,7 +368,6 @@ v16_5<-rep("income_src.none = 1 and income_src.subsistence_farming_or_fishing = 
 uuid<-c(uuid,u16_5)
 index<-c(index,i16_5)
 variables<-c(variables,v16_5)
-#has no case
 
 incon16_6<-som$income_src.none==1 & som$income_src.contracted_job==1
 i16_6<-which(incon16_6)
@@ -366,7 +376,6 @@ v16_6<-rep("income_src.none = 1 and income_src.contracted_job = 1", length(i16_6
 uuid<-c(uuid,u16_6)
 index<-c(index,i16_6)
 variables<-c(variables,v16_6)
-#has no case
 
 incon16_7<-som$income_src.none==1 & som$income_src.remittances==1
 i16_7<-which(incon16_7)
@@ -375,7 +384,6 @@ v16_7<-rep("income_src.none = 1 and income_src.remittances = 1", length(i16_7))
 uuid<-c(uuid,u16_7)
 index<-c(index,i16_7)
 variables<-c(variables,v16_7)
-#has no case
 
 incon16_8<-som$income_src.none==1 & som$income_src.humanitarian_assistance==1
 i16_8<-which(incon16_8)
@@ -384,7 +392,6 @@ v16_8<-rep("income_src.none = 1 and income_src.humanitarian_assistance = 1", len
 uuid<-c(uuid,u16_8)
 index<-c(index,i16_8)
 variables<-c(variables,v16_8)
-#has no case
 
 incon16_9<-som$income_src.none==1 & som$income_src.sale_of_humanitarian_assistance==1
 i16_9<-which(incon16_9)
@@ -393,7 +400,6 @@ v16_9<-rep("income_src.none = 1 and income_src.sale_of_humanitarian_assistance =
 uuid<-c(uuid,u16_9)
 index<-c(index,i16_9)
 variables<-c(variables,v16_9)
-#has no case
 
 incon16_10<-som$income_src.none==1 & som$income_src.rent_of_land==1
 i16_10<-which(incon16_10)
@@ -402,7 +408,6 @@ v16_10<-rep("income_src.none = 1 and income_src.rent_of_land = 1", length(i16_10
 uuid<-c(uuid,u16_10)
 index<-c(index,i16_10)
 variables<-c(variables,v16_10)
-#has no case
 
 incon16_11<-som$income_src.none==1 & som$income_src.business==1
 i16_11<-which(incon16_11)
@@ -411,7 +416,6 @@ v16_11<-rep("income_src.none = 1 and income_src.business = 1", length(i16_11))
 uuid<-c(uuid,u16_11)
 index<-c(index,i16_11)
 variables<-c(variables,v16_11)
-#has no case
 
 ###UPDATED, see below
 #incon16_12<-som$income_src.none==1 & som$avg_income>0
@@ -479,22 +483,23 @@ variables<-c(variables,v16_14)
 #incon17<-(som$education_high+som$education_tertiary+som$education_primary+som$education_middle+som$education_vocational+som$education_none)<=(som$males_18_40+som$males_41_59+som$males_60_over+som$females_18_40+som$females_41_59+som$females_60_over)
 #different levels might be counted for one person, instead only taken highest level and non-educated
 
-#maybe non-educated count kids
-incon17<-(som$education_tertiary+som$education_none)<=hh
-i17<-which(!incon17)
-u17<-som$X_uuid[which(!incon17)]
-v17<-rep("education_tertiary+education_none is bigger than all hh members over 18", length(i17))
-uuid<-c(uuid,u17)
-index<-c(index,i17)
-variables<-c(variables,v17)
+###DROPPED
+#incon17<-(som$education_tertiary+som$education_none)<=hh
+#i17<-which(!incon17)
+#u17<-som$X_uuid[which(!incon17)]
+#v17<-rep("education_tertiary+education_none is bigger than all hh members over 18", length(i17))
+#uuid<-c(uuid,u17)
+#index<-c(index,i17)
+#variables<-c(variables,v17)
 
-incon17<-(som$education_tertiary+som$education_none)<=(som$males_18_40+som$males_41_59+som$males_60_over+som$females_18_40+som$females_41_59+som$females_60_over)
-i17<-which(!incon17)
-u17<-som$X_uuid[which(!incon17)]
-v17<-rep("education_tertiary+education_none is bigger than all hh members over 18", length(i17))
-uuid<-c(uuid,u17)
-index<-c(index,i17)
-variables<-c(variables,v17)
+###DROPPED
+#incon17<-(som$education_tertiary+som$education_none)<=(som$males_18_40+som$males_41_59+som$males_60_over+som$females_18_40+som$females_41_59+som$females_60_over)
+#i17<-which(!incon17)
+#u17<-som$X_uuid[which(!incon17)]
+#v17<-rep("education_tertiary+education_none is bigger than all hh members over 18", length(i17))
+#uuid<-c(uuid,u17)
+#index<-c(index,i17)
+#variables<-c(variables,v17)
 
 incon18<-som$enrolled_total==(som$enrolled_boys_6_12+som$enrolled_girls_6_12+som$enrolled_boys_13_17+som$enrolled_girls_13_17)
 i18<-which(!incon18)
@@ -503,7 +508,6 @@ v18<-rep("enrolled_total does not equal sum of enrolled children", length(i18))
 uuid<-c(uuid,u18)
 index<-c(index,i18)
 variables<-c(variables,v18)
-#no case
 
 ###DROPPED
 #incon19<-(som$covid_boys_6_12+som$covid_girls_6_12+som$covid_boys_13_17+som$covid_girls_13_17)==(som$enrolled_boys_6_12+som$enrolled_girls_6_12+som$enrolled_boys_13_17+som$enrolled_girls_13_17+som$enrolled_boys_6_12e+som$enrolled_girls_6_12e+som$enrolled_boys_13_17e+som$enrolled_girls_13_17e)
@@ -546,7 +550,6 @@ v22<-rep("sum of children in hh is smaller than sum of home children", length(i2
 uuid<-c(uuid,u22)
 index<-c(index,i22)
 variables<-c(variables,v22)
-
 
 incon23<-som$rooms_total==som$sum_rooms
 i23<-which(!incon23)
@@ -703,13 +706,14 @@ uuid<-c(uuid,u36)
 index<-c(index,i36)
 variables<-c(variables,v36)
 
-incon37<-(som$sanitation_facility=="none_of" | som$latrine_features.walls_==1) & (som$toilets>0)
-i37<-which(incon37)
-u37<-som$X_uuid[which(incon37)]
-v37<-rep("sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh", length(i37))
-uuid<-c(uuid,u37)
-index<-c(index,i37)
-variables<-c(variables,v37)
+###DROPPED after converting som$sanitation_facility to ""
+#incon37<-(som$sanitation_facility=="none_of" | som$latrine_features.walls_==1) & (som$toilets>0)
+#i37<-which(incon37)
+#u37<-som$X_uuid[which(incon37)]
+#v37<-rep("sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh", length(i37))
+#uuid<-c(uuid,u37)
+#index<-c(index,i37)
+#variables<-c(variables,v37)
 #flags 2k, in survey toilets/bathrooms, might just be a shower or sink
 
 incon38<- som$latrine_features.lock==1 & (som$latrine_features.door==0 | som$latrine_features.walls_==0)
@@ -825,15 +829,15 @@ v49<-rep("factors_aid.30.=1, but no hh memeber under 40 listed", length(i49))
 uuid<-c(uuid,u49)
 index<-c(index,i49)
 variables<-c(variables,v49)
-#no cases
 
-incon50<-(som$females_60_over+som$males_60_over)==0 & som$factors_aid.60.==1
-i50<-which(incon50)
-u50<-som$X_uuid[which(incon50)]
-v50<-rep("factors_aid.60.=1, but no hh memeber over 60 listed", length(i50))
-uuid<-c(uuid,u50)
-index<-c(index,i50)
-variables<-c(variables,v50)
+###DROPPED
+#incon50<-(som$females_60_over+som$males_60_over)==0 & som$factors_aid.60.==1
+#i50<-which(incon50)
+#u50<-som$X_uuid[which(incon50)]
+#v50<-rep("factors_aid.60.=1, but no hh memeber over 60 listed", length(i50))
+#uuid<-c(uuid,u50)
+#index<-c(index,i50)
+#variables<-c(variables,v50)
 
 ###DROPPED
 #incon51<-(som$females_60_over+som$males_60_over)==0 & som$less_food>0
@@ -853,6 +857,113 @@ variables<-c(variables,v50)
 #index<-c(index,i52)
 #variables<-c(variables,v52)
 
+incon53<-hhChildren==0 & ((som$child_fever=="yes_7less"| som$child_fever=="yes7more") |(som$child_fever=="yes_7less"& som$child_fever=="yes7more"))
+i53<-which(incon53)
+u53<-som$X_uuid[which(incon53)]
+v53<-rep("child_fever=yes_7less and or yes7more, but no child in hh", length(i53))
+uuid<-c(uuid,u53)
+index<-c(index,i53)
+variables<-c(variables,v53)
+
+incon54<-hhChildren==0 & som$child_thin=="yes"
+i54<-which(incon54)
+u54<-som$X_uuid[which(incon54)]
+v54<-rep("child_this=yes, but no child in hh", length(i54))
+uuid<-c(uuid,u54)
+index<-c(index,i54)
+variables<-c(variables,v54)
+
+#incon55<-som$school_barrier_boys_note=="" & (som$males_6_12+som$males_13_15+som$males_16_17)>0
+#i55<-which(incon55)
+#u55<-som$X_uuid[which(incon55)]
+#v55<-rep("no school_barries_boys_note, but boys between 6&17 in hh", length(i55))
+#uuid<-c(uuid,u55)
+#index<-c(index,i55)
+#variables<-c(variables,v55)
+#no cases
+
+#interesting since no cases with boys, but 646 with girls, aren't they meant to go to school?
+#incon56<-som$school_barrier_girls_note=="" & (som$females_6_12+som$females_13_15+som$females_16_17)>0
+#i56<-which(incon56)
+#u56<-som$X_uuid[which(incon56)]
+#v56<-rep("no school_barries_girls_note, but girls between 6&17 in hh", length(i56))
+#uuid<-c(uuid,u56)
+#index<-c(index,i56)
+#variables<-c(variables,v56)
+
+incon57<-som$enrolled_girls_6_12+som$enrolled_girls_13_17>0 & som$school_barrier_girls_note==""
+i57<-which(incon57)
+u57<-som$X_uuid[which(incon57)]
+v57<-rep("school_barries_girls_note=empty, but girls between 6&17 enrolled", length(i57))
+uuid<-c(uuid,u57)
+index<-c(index,i57)
+variables<-c(variables,v57)
+
+incon57_1<-som$enrolled_boys_6_12+som$enrolled_boys_13_17>0 & som$school_barrier_boys_note==""
+i57_1<-which(incon57_1)
+u57_1<-som$X_uuid[which(incon57_1)]
+v57_1<-rep("school_barries_boys_note=empty, but boys between 6&17 enrolled", length(i57_1))
+uuid<-c(uuid,u57_1)
+index<-c(index,i57_1)
+variables<-c(variables,v57_1)
+
+incon57<-som$enrolled_girls_6_12+som$enrolled_girls_13_17>0 & som$school_barrier_girls_note==""
+i57<-which(incon57)
+u57<-som$X_uuid[which(incon57)]
+v57<-rep("school_barries_girls_note=empty, but girls between 6&17 enrolled", length(i57))
+uuid<-c(uuid,u57)
+index<-c(index,i57)
+variables<-c(variables,v57)
+
+#incon58<-(som$enrolled_girls_6_12+som$enrolled_girls_13_17)< (som$females_6_12+som$females_13_15+som$females_16_17)
+#i58<-which(incon58)
+#u58<-som$X_uuid[which(incon58)]
+#v58<-rep("girls in hh, but not enrolled", length(i58))
+#uuid<-c(uuid,u58)
+#index<-c(index,i58)
+#variables<-c(variables,v58)
+#1353 girls are not enrolled in school
+
+incon59<-som$hh_female == (som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
+i59<-which(!incon59)
+u59<-som$X_uuid[which(!incon59)]
+v59<-rep("hh_female does not fit to females added", length(i59))
+uuid<-c(uuid,u59)
+index<-c(index,i59)
+variables<-c(variables,v59)
+
+incon60<-som$chronic_illness_hh_members.female_13 <= som$females_13_15
+i60<-which(!incon60)
+u60<-som$X_uuid[which(!incon60)]
+v60<-rep("chronic_illness_hh_members.female_13 are more than females_13_15", length(i60))
+uuid<-c(uuid,u60)
+index<-c(index,i60)
+variables<-c(variables,v60)
+
+
+incon61<-som$chronic_illness_hh_members.female_14_17 <= (som$females_13_15+som$females_16_17)
+i61<-which(!incon61)
+u61<-som$X_uuid[which(!incon61)]
+v61<-rep("chronic_illness_hh_members.female_14_17 are more than females_16_17+females_13_15", length(i61))
+uuid<-c(uuid,u61)
+index<-c(index,i61)
+variables<-c(variables,v61)
+
+incon62<-som$chronic_illness_hh_members.male_13 <= som$males_13_15
+i62<-which(!incon62)
+u62<-som$X_uuid[which(!incon62)]
+v62<-rep("chronic_illness_hh_members.male_13 are more than males_13_15", length(i62))
+uuid<-c(uuid,u62)
+index<-c(index,i62)
+variables<-c(variables,v62)
+
+incon63<-som$chronic_illness_hh_members.male_14_17 <= (som$males_13_15+som$males_16_17)
+i63<-which(!incon63)
+u63<-som$X_uuid[which(!incon63)]
+v63<-rep("chronic_illness_hh_members.male_14_17 are more than males_16_17+males_13_15", length(i63))
+uuid<-c(uuid,u63)
+index<-c(index,i63)
+variables<-c(variables,v63)
 
 ########EXPORTING###################################################################################################
 #remove na's which happened through loop without cases (solved)
@@ -880,13 +991,12 @@ for (i in 1:nrow(inconsis))
   inconsis$total[i]<-sum(inconsis[i,2:l], na.rm = T)
 }
 
-write_xlsx(inconsis, paste0("~/Desktop/REACH/Data/inconsistencies",today,".xlsx"))
+write_xlsx(inconsis, paste0("~/Desktop/REACH/Data/inconsistencies",today,"final.xlsx"))
 
 ######Export Count of inconsistencies
 l_2<-length(inconsis)
 colSum <- data.frame(names = names(inconsis[,2:l_2]), sums_inconsis=colSums(inconsis[,2:l_2], na.rm = TRUE, dims = 1))
-
-write_xlsx(colSum, paste0("~/Desktop/REACH/Data/inconCount",today,".xlsx"))
+write_xlsx(colSum, paste0("~/Desktop/REACH/Data/inconCount",today,"final.xlsx"))
 
 ###Export Inspect and Inconsistencies combined
 
@@ -901,6 +1011,7 @@ for (i in 1:nrow(Out_Inc))
 {
   Out_Inc$total[i]<-sum(Out_Inc[i,2:l_3], na.rm = T)
 }
+
 
 #sum all inconsistencies including questions for the indicators for each survey
 
@@ -924,15 +1035,92 @@ for (i in 1:nrow(Out_Inc))
 ###UPDATED
 for (i in 1:nrow(Out_Inc))
 {
-  Out_Inc$total_Ind[i]<-sum(Out_Inc[i,c("sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
-                                        "latrine_features.door=1, but latrine_features.walls_=0",
-                                        "latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
-                                        "factors_aid.60.=1, but no hh memeber over 60 listed",
+  Out_Inc$total_Ind[i]<-sum(Out_Inc[i,c(#"sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
+                                        #"latrine_features.door=1, but latrine_features.walls_=0",
+                                        #"latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
                                         "factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc",
-                                        "enrollement_note is bigger than som$enrolled_total",
-                                        "sum of males and females under 18 does not match hh_children", "all girls in hh are less than girls_labor", "more hh_members_new_unemployed than adult hh members",
+                                       #"enrollement_note is bigger than enrolled_total", #no cases any more
+                                       #"sum of males and females under 18 does not match hh_children", 
+                                        "all girls in hh are less than girls_labor", "more hh_members_new_unemployed than adult hh members",
                                         "more chronic ill children than hh children")], na.rm = T)
 }
 
 
-write_xlsx(Out_Inc, paste0("~/Desktop/REACH/Data/Out_Inc",today,".xlsx"))
+write_xlsx(Out_Inc, paste0("~/Desktop/REACH/Data/Out_Inc",today,"final.xlsx"))
+
+####EXPORT only for inconsistencies (no outliers etc)#############################################################################################
+
+Inc<-inconsistencies
+Inc$ones<-as.integer(rep(1, nrow(Inc)))
+Inc<-dcast(data = Inc, formula = uuid ~ variables, fun.aggregate = mean, value.var = "ones")
+
+l_3=length(Inc)
+for (i in 1:nrow(Inc))
+{
+  Inc$total[i]<-sum(Inc[i,2:l_3], na.rm = T)
+}
+
+
+for (i in 1:nrow(Inc))
+{
+  Inc$total_Ind[i]<-sum(Inc[i,c(#"sanitation_facility=none_of or latrine_features.walls_=1, but toilets in hh",
+    #"latrine_features.door=1, but latrine_features.walls_=0",
+    #"latrine_features.lock=1, but latrine_features.door or latrine_features.walls_ isn't","un_continue=un_stop",
+    "factors_aid.Disability._Person_living_with_a_disability=1, but no in all disabalitily types (hearing, seeing etc",
+    #"enrollement_note is bigger than enrolled_total", #no cases any more
+    #"sum of males and females under 18 does not match hh_children", 
+    "all girls in hh are less than girls_labor", "more hh_members_new_unemployed than adult hh members",
+    "more chronic ill children than hh children")], na.rm = T)
+}
+
+
+write_xlsx(Inc, paste0("~/Desktop/REACH/Data/Inc",today,".xlsx"))
+
+
+######CHANGES & DELETION#############################################################################################################################################################
+incon37<-incon37<-som$sanitation_facility=="none_of" & som$latrine_features.walls_==1
+i37<-which(incon37)
+u37<-som$X_uuid[which(incon37)]
+
+som[i37,"sanitation_facility"]<-""
+som[i39, "latrine_features.walls_"]<- 1
+som[i38, "latrine_features.walls_"]<- 1
+som[i38, "latrine_features.door"]<- 1
+#som[i46, "un_stop"] <- ""
+#som[i46, "un_continue"] <- ""
+
+####cleaning log run afterwards
+
+
+write_xlsx(som, paste0("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5",today,"_clean_data.xlsx"))
+write.csv(som, file= paste0("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5",today,"_clean_data.csv"), row.names=FALSE)
+################################################################################################################################################################
+#delete surveys with inconsistencies left (1983)
+som_final<-som
+for (i in 1:length(unique(uuid))){
+  som_final<-som_final[!som_final$X_uuid==unique(uuid)[i],]}
+
+write_xlsx(som_final, paste0("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5",today,"_clean_data.xlsx"))
+write.csv(som_final, file= paste0("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5",today,"_clean_data.csv"), row.names=FALSE)
+
+#cleaning log
+X_uuid<-unique(uuid)
+issue<-rep("deleted survey due to inconsistency with R (see github)", length(X_uuid))
+today2 <- Sys.Date()
+today2<-format(today2, format="%Y %b %d")
+changed<-rep(today2, length(X_uuid))
+
+log<-data.frame(X_uuid,issue,changed )
+
+write_xlsx(log, paste0("~/Desktop/REACH/Data/Cleaning_log_deletion",today,"_clean_data.xlsx"))
+write.csv(log, file= paste0("~/Desktop/REACH/Data/Cleaning_log_deletion",today,"_clean_data.csv"), row.names=FALSE)
+
+#get deleted surveys
+
+som_delete<-anti_join(som,som_final)
+
+write_xlsx(som_delete, paste0("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5",today,"_deleted_surveys.xlsx"))
+write.csv(som_delete, file= paste0("~/Desktop/REACH/Data/SOM_MSNA2020_Merged_V5",today,"_deleted_surveys.csv"), row.names=FALSE)
+
+
+######################################################################################################################################
