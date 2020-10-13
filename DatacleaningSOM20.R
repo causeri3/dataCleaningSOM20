@@ -39,7 +39,6 @@ som<-read.csv(file="C:/Users/Vanessa Causemann/Desktop/REACH/Data/MyOutputs/_202
 #som3<-read.csv(file="C:/Users/Vanessa Causemann/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-08-30_v4_clean_data.csv", head=T, dec=".", sep=",")
 
 
-
 #create new data frames without NA's in order to sum up later in inconsistencies (run before changing dates)
 
 som_nona<-som
@@ -1482,5 +1481,65 @@ write.csv(som_delete2, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Da
 write_xlsx(som_final2, paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/cleaned_data3",today,".xlsx"))
 write.csv(som_final2, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/",today,"cleaned_data3.csv"), row.names=FALSE)
 
-#delete unnecessary and wrong variables
-#tbd
+
+#############got done by Mohamed#####################################################################################################################################################################################
+######SUM UP TOTAL VARIBALES NEW################################
+num <- unlist(lapply(som, is.numeric)) 
+somNum<-som[ , num]
+colnames(somNum)
+
+
+som_nona<-som
+som_nona[is.na(som_nona)]=0
+
+
+som$hh_size <- (som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$males_18_40+som$males_41_59+som$males_60_over+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
+som$total_hh<- (som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$males_18_40+som$males_41_59+som$males_60_over+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
+som$hh_children<-(som$males_0m_5y+som$males_6_12+som$males_13_15+som$males_16_17+som$females_0m_5y+som$females_6_12+som$females_13_15+som$females_16_17)
+som$hh_female<-(som$females_13_15+som$females_16_17+som$females_18_40+som$females_41_59+som$females_60_over)
+som$children_school_age<- (som$males_6_12+som$males_13_15+som$males_16_17+som$females_6_12+som$females_13_15+som$females_16_17)
+som$HH_schoolaged_children<- (som$males_6_12+som$males_13_15+som$males_16_17+som$females_6_12+som$females_13_15+som$females_16_17)
+# ? children_vaccine_age which age group?
+#? hh_difference
+
+som$enrolled_total<-(som_nona$enrolled_boys_6_12+som_nona$enrolled_girls_6_12+som_nona$enrolled_boys_13_17+som_nona$enrolled_girls_13_17)
+som$enrolled_total[som$enrolled_total==0]<-"" # in original variabl 3x0 ?
+
+#? som$enrollement_note (children attending school regular before covid, where to take that information from?, 1281 NA, 5641 = 0)
+# ? som$enrollement_note2 #(children dropping out school before covid,, where to take that information from? 0 if none (8337times), also 1281 NAs in the variable?)
+
+som$covid_enrollement<- (som_nona$covid_boys_6_12+som_nona$covid_girls_6_12+som_nona$covid_boys_13_17+som_nona$covid_girls_13_17)
+som$covid_enrollement[som$covid_enrollement==0]<-"" # in original variable 246x0 & 128xNA's?
+
+som$sum_rooms <-(som_nona$bedrooms+som_nona$living_rooms+som_nona$kitchens+som_nona$toilets) #986 NA#s & 237  0's
+som$rooms_total <- (som_nona$bedrooms+som_nona$living_rooms+som_nona$kitchens+som_nona$toilets) #986 NA#s & 237  0's
+
+som$child_labor_notes<-(som_nona$boys_labor+som_nona$girls_labor) 
+som$child_labor_notes[som$child_labor_notes==0]<-"" # in original variable 4x0 & 10073xNA?
+
+
+###find skip logic:
+
+table(som$covid_enrollement)
+#find NA's
+sum(is.na(som$covid_enrollement)*1)
+
+
+#######changes due to labelling issues in Tableau########################################################################################################################################################################################################
+som<-read.csv(file="C:/Users/Vanessa Causemann/Desktop/REACH/Data/REACH_SOM2006_JMCNA_IV_Data-Set_August2020_4.csv", head=T, dec=".", sep=",")
+#remove funky added on 700k rows since last cleaning
+som=som[1:10222,]
+
+ind<- which(som$school_transport=="business")
+som$school_transport[ind]<- "bus"
+
+uuids<-som$X_uuid[ind]
+
+names(som)[names(som) == "hand_washing_times.coughing"] <- "hand_washing_times.cough_sneeze"
+names(som)[names(som) == "nutrition_barriers.not"] <- "nutrition_barriers.not_enough_prov"
+
+#add date for export 
+today <- Sys.Date()
+today<-format(today, format="_%Y_%b_%d")
+write.csv(som, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/",today,"cleaned_data.csv"), row.names=FALSE)
+write.csv(uuids, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/",today,"uuids.csv"), row.names=FALSE)
