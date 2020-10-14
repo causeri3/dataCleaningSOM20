@@ -25,7 +25,7 @@ today<-format(today, format="_%Y_%b_%d")
 
 #################IMPORT DATA SET################################################################################################################
 #Import data set as csv-file, exported from the Excel file 
-som<-read.csv(file="C:/Users/Vanessa Causemann/Desktop/REACH/Data/MyOutputs/_2020_Oct_05_clean_data4.csv", head=T, dec=".", sep=",")
+som<-read.csv(file="C:/Users/Vanessa Causemann/Desktop/REACH/Data/MyOutputs/_2020_Oct_06weighted_data.csv", head=T, dec=".", sep=",")
 #som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-09-02_v7_clean_data.csv", head=T, dec=".", sep=",")
 #som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_Merged_2020-09-02_v7_clean-data.csv", head=T, dec=".", sep=",")
 #som<-read.csv(file="~/Desktop/REACH/Data/SOM_MSNA2020_2020_Sep_08.csv", head=T, dec=".", sep=",")
@@ -1543,3 +1543,49 @@ today <- Sys.Date()
 today<-format(today, format="_%Y_%b_%d")
 write.csv(som, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/",today,"cleaned_data.csv"), row.names=FALSE)
 write.csv(uuids, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/",today,"uuids.csv"), row.names=FALSE)
+
+som<-read.csv(file="C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/_2020_Oct_13cleaned_data.csv", head=T, dec=".", sep=",")
+
+som$written_documentation[som$written_documentation=="NO"]<- "no"
+som$written_documentation[som$written_documentation=="No"]<- "no"
+som$written_documentation[som$written_documentation=="YES"] <- "yes"
+
+names(som)[names(som) == "wintting_blankets"] <- "nfi_market.wintting_blankets"
+names(som)[names(som) == "mattting_mats"] <- "nfi_market.mattting_mats"
+names(som)[names(som) == "cookting_utensils"] <- "nfi_market.cookting_utensils"
+names(som)[names(som) == "cookting_fuel"] <- "nfi_market.cookting_fuel"
+names(som)[names(som) == "wateting_containers"] <- "nfi_market.wateting_containers"
+
+names(som)[names(som) == "jerrting_can"] <- "nfi_market.jerrting_can"
+names(som)[names(som) == "Torches"] <- "nfi_market.Torches"
+names(som)[names(som) == "solating_lamps"] <- "nfi_market.solating_lamps"
+names(som)[names(som) == "solating_panels"] <- "nfi_market.solating_panels"
+names(som)[names(som) == "Generators"] <- "nfi_market.Generators"
+
+names(som)[names(som) == "Batteries"] <- "nfi_market.Batteries"
+names(som)[names(som) == "Clothing"] <- "nfi_market.Clothing"
+names(som)[names(som) == "wintting_clothing"] <- "nfi_market.wintting_clothing"
+names(som)[names(som) == "Shoes"] <- "nfi_market.Shoes"
+names(som)[names(som) == "wintting_shoes"] <- "nfi_market.wintting_shoes"
+
+names(som)[names(som) == "wintting_heaters"] <- "nfi_market.wintting_heaters"
+names(som)[names(som) == "heatting_fuel"] <- "nfi_market.heatting_fuel"
+names(som)[names(som) == "dispting_diapers"] <- "nfi_market.dispting_diapers"
+names(som)[names(som) == "saniting_pads"] <- "nfi_market.saniting_pads"
+names(som)[names(som) == "Soap"] <- "nfi_market.Soap"
+
+names(som)[names(som) == "washting_powder"] <- "nfi_market.washting_powder"
+names(som)[names(som) == "cleating_house"] <- "nfi_market.cleating_house"
+names(som)[names(som) == "deteting_dishes"] <- "nfi_market.deteting_dishes"
+names(som)[names(som) == "hygiting_kits"] <- "nfi_market.hygiting_kits"
+names(som)[names(som) == "handting_sanitiser"] <- "nfi_market.handting_sanitiser"
+
+names(som)[names(som) == "faceting_masks"] <- "nfi_market.faceting_masks"
+names(som)[names(som) == "dispting_gloves"] <- "nfi_market.dispting_gloves"
+names(som)[names(som) == "mosqting_Nets"] <- "nfi_market.mosqting_Nets"
+
+#add date for export 
+today <- Sys.Date()
+today<-format(today, format="_%Y_%b_%d")
+
+write.csv(som, file= paste0("C:/Users/Vanessa Causemann/Desktop/REACH/Data/myOutputs/",today,"cleaned_data.csv"), row.names=FALSE)
