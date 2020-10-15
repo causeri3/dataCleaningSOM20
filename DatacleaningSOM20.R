@@ -1585,8 +1585,6 @@ names(som)[names(som) == "dispting_gloves"] <- "nfi_market.dispting_gloves"
 names(som)[names(som) == "mosqting_Nets"] <- "nfi_market.mosqting_Nets"
 names(som)[names(som) == "beddting_items"] <- "nfi_market.beddting_items"
 
-
-
 #add date for export 
 today <- Sys.Date()
 today<-format(today, format="_%Y_%b_%d")
