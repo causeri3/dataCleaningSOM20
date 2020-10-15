@@ -1583,6 +1583,9 @@ names(som)[names(som) == "handting_sanitiser"] <- "nfi_market.handting_sanitiser
 names(som)[names(som) == "faceting_masks"] <- "nfi_market.faceting_masks"
 names(som)[names(som) == "dispting_gloves"] <- "nfi_market.dispting_gloves"
 names(som)[names(som) == "mosqting_Nets"] <- "nfi_market.mosqting_Nets"
+names(som)[names(som) == "beddting_items"] <- "nfi_market.beddting_items"
+
+
 
 #add date for export 
 today <- Sys.Date()
