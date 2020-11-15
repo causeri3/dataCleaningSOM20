@@ -1,7 +1,15 @@
 # DatacleaningSOM20
 
-Script only works with JMCNA Data from Somalia, 2020.
+For REACH Initiative, Joint Multi Cluster Needs Asessment (JMCNA) report, 2020 Somalia:
+
 In order to support the cleaning of the data.
-Checks for dublicates, outliers, sensitive data, "others" answers by means of package cleaninginspectoR ("OutliersEtc" is the xlsx-export of those results called).
-Spelling checks in character variables and MAIN PART consists of finding inconsistencies in the survey answers ("inconsistencies" is the xlsx-export of those results called)
-Main export is one xlsx-file combining all found issues sorted by uuid (called "Out_Inc"). In order to prioritize cleaning, count of possible errors per inconstistency xlsx-file "inconCount" can be exported.
+- Checks for dublicates, outliers, sensitive data, "others" answers by means of package cleaninginspectoR
+  -> xlsx-file "OutliersEtc"
+- Spelling checks in character variables 
+- Main part consists of finding inconsistencies in the survey answers 
+  ->xlsx-file "inconsistencies"
+
+Main export is one xlsx-file combining all found issues sorted by uuid 
+  -> xlsx-file "Out_Inc"
+In order to prioritize call backs, count of possible errors per inconstistency can be exported
+  -> xlsx-file "inconCount"
