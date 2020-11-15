@@ -9,7 +9,9 @@ In order to support the cleaning of the data.
 - Main part consists of finding inconsistencies in the survey answers 
   ->xlsx-file "inconsistencies"
 
+
 Main export is one xlsx-file combining all found issues sorted by uuid 
   -> xlsx-file "Out_Inc"
+  
 In order to prioritize call backs, count of possible errors per inconstistency can be exported
   -> xlsx-file "inconCount"
