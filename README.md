@@ -11,6 +11,5 @@ In order to support the cleaning of the data.
 
 Main export is one xlsx-file combining all found issues sorted by uuid 
   -> xlsx-file "Out_Inc"
-	
 In order to prioritize call backs, count of possible errors per inconstistency can be exported
   -> xlsx-file "inconCount"
